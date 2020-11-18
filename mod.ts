@@ -1,4 +1,6 @@
+import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 import { readKeypress } from "https://deno.land/x/keypress@0.0.4/mod.ts";
+import { Board } from "./src/board.ts";
 import {
   Tetriminos,
   TetriminosJ,
@@ -6,63 +8,46 @@ import {
   TetriminosT,
 } from "./src/tetriminos.ts";
 
-// const row = "|    ▩  |";
-// console.log(
-//   new Array(10).fill(0).map(() =>
-//     row.split("").map((e, i) => i % 2 ? colors.rgb8(e, 10) : e).join("")
-//   ).join("\n"),
-// );
-// console.log("▢-------▩");
-
-function tetriminosFactory(type: string) {
-  switch (type) {
-    case "j":
-      return new TetriminosJ();
-    case "l":
-      return new TetriminosL();
-    case "t":
-      return new TetriminosT();
-    default:
-      throw new Error();
-  }
+interface TetriminosMap<T extends Tetriminos> {
+  [key: string]: () => T;
 }
 
-const tetriminosTypes = ["j", "l", "t"];
+const tetriminosFactory: TetriminosMap<Tetriminos> = {
+  j: () => new TetriminosJ(),
+  l: () => new TetriminosL(),
+  t: () => new TetriminosT(),
+};
+
+const tetriminosTypes = Object.keys(tetriminosFactory);
 let typeIndex = 0;
 
-let tetriminos: Tetriminos = tetriminosFactory(tetriminosTypes[typeIndex]);
+let tetriminos: Tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
 console.clear();
-tetriminos.display();
+console.log(tetriminos.toString());
+console.log(new Board().toString());
 
 for await (const keypress of readKeypress()) {
-  if (keypress.key === "up") {
+  if (keypress.key === "w") {
     console.clear();
     tetriminos.rotate();
-    tetriminos.display();
+    console.log(colors.bgWhite(tetriminos.toString()));
   }
 
-  if (keypress.key === "right") {
-    typeIndex = ++typeIndex >= tetriminosTypes.length ? 0 : typeIndex;
-    tetriminos = tetriminosFactory(tetriminosTypes[typeIndex]);
+  if (keypress.key === "a") {
+    typeIndex = --typeIndex < 0 ? tetriminosTypes.length - 1 : typeIndex;
+    tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
     console.clear();
-    tetriminos.display();
+    console.log(colors.bgWhite(tetriminos.toString()));
+  }
+
+  if (keypress.key === "d") {
+    typeIndex = ++typeIndex >= tetriminosTypes.length ? 0 : typeIndex;
+    tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
+    console.clear();
+    console.log(colors.bgWhite(tetriminos.toString()));
   }
 
   if (keypress.ctrlKey && keypress.key === "c") {
     Deno.exit(0);
   }
 }
-// new TetriminosL().display();
-// new TetriminosT().display();
-
-// console.log(
-//   `| ${bgBrightBlack(" ")}     |
-// | ${bgBrightBlack(" ")}     |
-// | ${bgBrightBlack(" ")}     |
-// | ${bgBrightBlack(" ")}     |
-// | ${bgBrightBlack(" ")}     |
-// | ${bgBrightBlack(" ")}     |
-// |${brightWhite("■")}${bgBrightBlack(" ")}     |
-// |${white(`■${bgBrightBlack("■")}■`)}    |
-// ---------`,
-// );

@@ -12,20 +12,16 @@ export abstract class Tetriminos {
 
   state = 0;
 
-  display(): void {
-    // Object.values(this.states).forEach((state) => {
-    this.states[this.state].forEach((row: number[]) => {
-      console.log(
-        colors.bgBlack(
-          row.map((el) => colors.rgb8(el ? "▪" : " ", this.color)).join(" "),
-        ),
-      );
-    });
-    // });
-  }
-
   rotate() {
     this.state = ++this.state >= this.states.length ? 0 : this.state;
+  }
+
+  toString() {
+    // Object.values(this.states).forEach((state) => {
+    return this.states[this.state].map((row: number[]) => {
+      return row.map((el) => colors.rgb8(el ? "◼ " : "  ", this.color)).join("");
+    }).join("\n");
+    // });
   }
 }
 

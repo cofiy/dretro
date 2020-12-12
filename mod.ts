@@ -2,49 +2,55 @@ import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 import { readKeypress } from "https://deno.land/x/keypress@0.0.4/mod.ts";
 import { Board } from "./src/board.ts";
 import {
-  Tetriminos,
-  TetriminosJ,
-  TetriminosL,
-  TetriminosT,
+  Tetrimino,
+  TetriminoJ,
+  TetriminoL,
+  TetriminoT,
 } from "./src/tetriminos.ts";
 
-interface TetriminosMap<T extends Tetriminos> {
+interface TetriminoMap<T extends Tetrimino> {
   [key: string]: () => T;
 }
 
-const tetriminosFactory: TetriminosMap<Tetriminos> = {
-  j: () => new TetriminosJ(),
-  l: () => new TetriminosL(),
-  t: () => new TetriminosT(),
+const tetriminosFactory: TetriminoMap<Tetrimino> = {
+  j: () => new TetriminoJ(),
+  l: () => new TetriminoL(),
+  t: () => new TetriminoT(),
 };
 
 const tetriminosTypes = Object.keys(tetriminosFactory);
 let typeIndex = 0;
 
-let tetriminos: Tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
+let tetrimino: Tetrimino = tetriminosFactory[tetriminosTypes[typeIndex]]();
 console.clear();
-console.log(tetriminos.toString());
-console.log(new Board().toString());
+// console.log(tetrimino.toString());
+let board = new Board();
+board.newTetrimino(tetrimino);
+console.log(board.toString());
 
 for await (const keypress of readKeypress()) {
   if (keypress.key === "w") {
     console.clear();
-    tetriminos.rotate();
-    console.log(colors.bgWhite(tetriminos.toString()));
+    board.rotate();
+    console.log(board.toString());
   }
 
   if (keypress.key === "a") {
-    typeIndex = --typeIndex < 0 ? tetriminosTypes.length - 1 : typeIndex;
-    tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
     console.clear();
-    console.log(colors.bgWhite(tetriminos.toString()));
+    board.move("left");
+    console.log(board.toString());
   }
 
   if (keypress.key === "d") {
-    typeIndex = ++typeIndex >= tetriminosTypes.length ? 0 : typeIndex;
-    tetriminos = tetriminosFactory[tetriminosTypes[typeIndex]]();
     console.clear();
-    console.log(colors.bgWhite(tetriminos.toString()));
+    board.move("right");
+    console.log(board.toString());
+  }
+
+  if (keypress.key === "s") {
+    console.clear();
+    board.move("down");
+    console.log(board.toString());
   }
 
   if (keypress.ctrlKey && keypress.key === "c") {

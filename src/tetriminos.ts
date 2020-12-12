@@ -1,6 +1,6 @@
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 
-export abstract class Tetriminos {
+export abstract class Tetrimino {
   color = 0;
 
   states = [
@@ -19,13 +19,21 @@ export abstract class Tetriminos {
   toString() {
     // Object.values(this.states).forEach((state) => {
     return this.states[this.state].map((row: number[]) => {
-      return row.map((el) => colors.rgb8(el ? "◼ " : "  ", this.color)).join("");
+      return row.map((el) => el ? colors.bgRgb8("  ", this.color) : "  ").join(
+        "",
+      );
     }).join("\n");
     // });
   }
+
+  render(row: number, column: number) {
+    return this.states[this.state][row][column]
+      ? colors.bgRgb8("  ", this.color)
+      : null;
+  }
 }
 
-export class TetriminosJ extends Tetriminos {
+export class TetriminoJ extends Tetrimino {
   color = 12;
 
   states = [
@@ -36,7 +44,7 @@ export class TetriminosJ extends Tetriminos {
   ];
 }
 
-export class TetriminosL extends Tetriminos {
+export class TetriminoL extends Tetrimino {
   color = 202;
 
   states = [
@@ -47,7 +55,7 @@ export class TetriminosL extends Tetriminos {
   ];
 }
 
-export class TetriminosT extends Tetriminos {
+export class TetriminoT extends Tetrimino {
   color = 13;
 
   states = [

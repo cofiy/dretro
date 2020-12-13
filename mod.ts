@@ -1,56 +1,71 @@
+#!/usr/bin/env -S deno run --unstable -A
+
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
+import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
 import { readKeypress } from "https://deno.land/x/keypress@0.0.4/mod.ts";
-import { Board } from "./src/board.ts";
-import {
-  Tetrimino,
-  TetriminoJ,
-  TetriminoL,
-  TetriminoT,
-} from "./src/tetriminos.ts";
+import { Board } from "./src/tetris/board.ts";
 
-interface TetriminoMap<T extends Tetrimino> {
-  [key: string]: () => T;
-}
+new Promise(async() => {
+  while(true) {
+    await play("audio/ANightOfDizzySpells.mp3").then(() =>
+      new Promise((resolve) => setTimeout(resolve, 3000))
+    );
+  }
+})
 
-const tetriminosFactory: TetriminoMap<Tetrimino> = {
-  j: () => new TetriminoJ(),
-  l: () => new TetriminoL(),
-  t: () => new TetriminoT(),
-};
+const { red, yellow, green, cyan, blue, magenta } = colors;
+const colorPatterns = [
+  undefined,
+  red,
+  yellow,
+  green,
+  cyan,
+  blue,
+  magenta,
+  undefined,
+];
+const header = `                                                      
+  ██████╗ ██████╗ ███████╗████████╗██████╗  ██████╗   
+  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗  
+  ██║  ██║██████╔╝█████╗     ██║   ██████╔╝██║   ██║  
+  ██║  ██║██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║  
+  ██████╔╝██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝  
+  ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   
+                                                      `;
 
-const tetriminosTypes = Object.keys(tetriminosFactory);
-let typeIndex = 0;
+const coloredHeader = colors.bgRgb8(
+  header.split("\n").map((line, i) => colorPatterns[i]?.(line) ?? line).join(
+    "\n",
+  ),
+  234,
+);
 
-let tetrimino: Tetrimino = tetriminosFactory[tetriminosTypes[typeIndex]]();
 console.clear();
+console.log(coloredHeader);
+
+// const tetrimino: Tetrimino = tetriminosFactory.o();
 // console.log(tetrimino.toString());
-let board = new Board();
-board.newTetrimino(tetrimino);
-console.log(board.toString());
+const board = new Board();
+// board.newTetrimino(tetrimino);
 
 for await (const keypress of readKeypress()) {
-  if (keypress.key === "w") {
-    console.clear();
-    board.rotate();
-    console.log(board.toString());
+  if (keypress.key === "q") {
+    board.rotate("anticlockwise");
+  }
+  if (keypress.key === "e") {
+    board.rotate("clockwise");
   }
 
   if (keypress.key === "a") {
-    console.clear();
     board.move("left");
-    console.log(board.toString());
   }
 
   if (keypress.key === "d") {
-    console.clear();
     board.move("right");
-    console.log(board.toString());
   }
 
   if (keypress.key === "s") {
-    console.clear();
     board.move("down");
-    console.log(board.toString());
   }
 
   if (keypress.ctrlKey && keypress.key === "c") {

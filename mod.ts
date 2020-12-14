@@ -1,16 +1,16 @@
 #!/usr/bin/env -S deno run --unstable -A
 
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
-import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
+// import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
 import { readKeypress } from "https://deno.land/x/keypress@0.0.4/mod.ts";
 import { Board } from "./src/tetris/board.ts";
 
-new Promise(async () => {
-  while (true) {
-    await play("audio/ANightOfDizzySpells.mp3");
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  }
-});
+// new Promise(async () => {
+//   while (true) {
+//     await play("audio/ANightOfDizzySpells.mp3");
+//     await new Promise((resolve) => setTimeout(resolve, 3000));
+//   }
+// });
 
 const { red, yellow, green, cyan, blue, magenta } = colors;
 const colorPatterns = [

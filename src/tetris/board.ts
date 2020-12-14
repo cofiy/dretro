@@ -1,5 +1,5 @@
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
-import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
+// import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
 import { command } from "./command.ts";
 import { Randomizer } from "./randomizer.ts";
 import { Tetrimino } from "./tetriminos.ts";
@@ -63,7 +63,7 @@ export class Board {
   }
 
   rotate(direction: string) {
-    play("audio/rollover6.ogg");
+    // play("audio/rollover6.ogg");
     this.currentTetrimino?.rotate(direction);
     this.placeAt();
   }

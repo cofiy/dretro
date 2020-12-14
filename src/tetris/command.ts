@@ -1,50 +1,18 @@
-// import { readKeypress } from "https://deno.land/x/keypress@0.0.4/mod.ts";
+import { Board } from "./board.ts";
 
-// interface TetriminoMap<T extends Tetrimino> {
-//   [key: string]: () => T;
-// }
+interface KeyMap {
+  [key: string]: (board: Board) => void;
+}
 
-// const tetriminosFactory: TetriminoMap<Tetrimino> = {
-//   j: () => new TetriminoJ(),
-//   l: () => new TetriminoL(),
-//   t: () => new TetriminoT(),
-// };
+const keyMap: KeyMap = {
+  q: (board) => board.rotate("ainiclockwise"),
+  e: (board) => board.rotate("clockwise"),
+  a: (board) => board.move("left"),
+  d: (board) => board.move("right"),
+  s: (board) => board.move("down"),
+};
 
-// const tetriminosTypes = Object.keys(tetriminosFactory);
-// let typeIndex = 0;
-
-// let tetrimino: Tetrimino = tetriminosFactory[tetriminosTypes[typeIndex]]();
-// // console.log(tetrimino.toString());
-// let board = new Board();
-// board.newTetrimino(tetrimino);
-// console.log(board.toString());
-
-// for await (const keypress of readKeypress()) {
-//   if (keypress.key === "w") {
-//     console.clear();
-//     board.rotate();
-//     console.log(board.toString());
-//   }
-
-//   if (keypress.key === "a") {
-//     console.clear();
-//     board.move("left");
-//     console.log(board.toString());
-//   }
-
-//   if (keypress.key === "d") {
-//     console.clear();
-//     board.move("right");
-//     console.log(board.toString());
-//   }
-
-//   if (keypress.key === "s") {
-//     console.clear();
-//     board.move("down");
-//     console.log(board.toString());
-//   }
-
-//   if (keypress.ctrlKey && keypress.key === "c") {
-//     Deno.exit(0);
-//   }
-// }
+export const command = (key: string | undefined, board: Board) =>
+  Object.keys(keyMap).includes(key ?? "")
+    ? keyMap[key as keyof KeyMap](board)
+    : null;

@@ -1,5 +1,6 @@
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
+import { command } from "./command.ts";
 import { Randomizer } from "./randomizer.ts";
 import { Tetrimino } from "./tetriminos.ts";
 
@@ -67,6 +68,10 @@ export class Board {
     this.placeAt();
   }
 
+  control(key: string | undefined) {
+    command(key, this);
+  }
+
   move(direction = "left") {
     const position = this.currentPosition;
     const tetrimino = this.currentTetrimino!;
@@ -76,30 +81,40 @@ export class Board {
     for (let i = 0; i < tetriminoState.length; i++) {
       for (let j = 0; j < tetriminoState[i].length; j++) {
         if (tetriminoState[i][j] !== 0) {
-          tetriminoBody =  [ ...tetriminoBody, [i + position.row, j + position.column]];
+          tetriminoBody = [
+            ...tetriminoBody,
+            [i + position.row, j + position.column],
+          ];
         }
       }
     }
 
     if (direction === "left") {
-      if (tetriminoBody.every(([i, j]) => j > 0)) {
+      if (
+        tetriminoBody.every(([i, j]) =>
+          j > 0 &&
+          (!this.grid[i][j - 1] ||
+            this.grid[i][j - 1].tetrimino === this.currentTetrimino)
+        )
+      ) {
         this.currentPosition.column -= 1;
       }
     } else if (direction === "right") {
-      if (tetriminoBody.every(([i, j]) => j < this.column - 1)) {
+      if (
+        tetriminoBody.every(([i, j]) =>
+          j < this.column - 1 &&
+          (!this.grid[i][j + 1] ||
+            this.grid[i][j + 1].tetrimino === this.currentTetrimino)
+        )
+      ) {
         this.currentPosition.column += 1;
       }
     } else {
       if (
-        this.currentPosition.row +
-              this.currentTetrimino!.rotations[this.currentTetrimino!.state]
-                .length >= this.row ||
-        this.grid.some((row, i) =>
-          row.some((el, j) => {
-            return el?.tetrimino === this.currentTetrimino &&
-              this.grid[i + 1][j] &&
-              this.grid[i + 1][j].tetrimino !== this.currentTetrimino;
-          })
+        tetriminoBody.some(([i, j]) =>
+          i >= this.row - 1 ||
+          this.grid[i + 1][j] &&
+            this.grid[i + 1][j].tetrimino !== this.currentTetrimino
         )
       ) {
         this.releaseFullRow();

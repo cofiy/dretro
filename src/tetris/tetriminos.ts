@@ -1,5 +1,3 @@
-import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
-
 export abstract class Tetrimino {
   protected block = "";
   rotations = [[[0]]];

@@ -5,7 +5,7 @@ interface KeyMap {
 }
 
 const keyMap: KeyMap = {
-  q: (board) => board.rotate("ainiclockwise"),
+  q: (board) => board.rotate("anticlockwise"),
   e: (board) => board.rotate("clockwise"),
   a: (board) => board.move("left"),
   d: (board) => board.move("right"),

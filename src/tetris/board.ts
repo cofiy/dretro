@@ -3,6 +3,7 @@ import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 import { command } from "./command.ts";
 import { Randomizer } from "./randomizer.ts";
 import { Tetrimino } from "./tetriminos.ts";
+import { RotateDirection, MoveDirection } from "./directions.ts";
 
 export class Board {
   row = 20;
@@ -62,7 +63,7 @@ export class Board {
     this.placeAt();
   }
 
-  rotate(direction: string) {
+  rotate(direction: RotateDirection) {
     // play("audio/rollover6.ogg");
     this.currentTetrimino?.rotate(direction);
     this.placeAt();
@@ -72,7 +73,7 @@ export class Board {
     command(key, this);
   }
 
-  move(direction = "left") {
+  move(direction: MoveDirection) {
     const position = this.currentPosition;
     const tetrimino = this.currentTetrimino!;
     const tetriminoState = tetrimino.rotations[tetrimino.state];
@@ -89,7 +90,7 @@ export class Board {
       }
     }
 
-    if (direction === "left") {
+    if (direction === MoveDirection.LEFT) {
       if (
         tetriminoBody.every(([i, j]) =>
           j > 0 &&
@@ -99,7 +100,7 @@ export class Board {
       ) {
         this.currentPosition.column -= 1;
       }
-    } else if (direction === "right") {
+    } else if (direction === MoveDirection.RIGHT) {
       if (
         tetriminoBody.every(([i, j]) =>
           j < this.column - 1 &&
@@ -130,7 +131,7 @@ export class Board {
 
   async constantDrop() {
     await new Promise((resolve) =>
-      setTimeout(() => resolve(this.move("down")), 1000)
+      setTimeout(() => resolve(this.move(MoveDirection.DOWN)), 1000)
     );
     this.constantDrop();
   }

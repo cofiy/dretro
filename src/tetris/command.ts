@@ -1,15 +1,16 @@
 import { Board } from "./board.ts";
+import { RotateDirection, MoveDirection } from "./directions.ts";
 
 interface KeyMap {
   [key: string]: (board: Board) => void;
 }
 
 const keyMap: KeyMap = {
-  q: (board) => board.rotate("anticlockwise"),
-  e: (board) => board.rotate("clockwise"),
-  a: (board) => board.move("left"),
-  d: (board) => board.move("right"),
-  s: (board) => board.move("down"),
+  q: (board) => board.rotate(RotateDirection.ANTICLOCKWISE),
+  e: (board) => board.rotate(RotateDirection.CLOCKWISE),
+  a: (board) => board.move(MoveDirection.LEFT),
+  d: (board) => board.move(MoveDirection.RIGHT),
+  s: (board) => board.move(MoveDirection.DOWN),
 };
 
 export const command = (key: string | undefined, board: Board) =>

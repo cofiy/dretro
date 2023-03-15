@@ -1,10 +1,12 @@
+import { RotateDirection } from "./directions.ts";
+
 export abstract class Tetrimino {
   protected block = "";
   rotations = [[[0]]];
   state = 0;
 
-  rotate(direction = "anticlockwise") {
-    if (direction === "anticlockwise") {
+  rotate(direction: RotateDirection) {
+    if (direction === RotateDirection.ANTICLOCKWISE) {
       this.state = --this.state < 0 ? this.rotations.length - 1 : this.state;
     } else {
       this.state = ++this.state >= this.rotations.length ? 0 : this.state;

@@ -2,7 +2,7 @@
 
 import * as colors from "https://deno.land/std@0.78.0/fmt/colors.ts";
 // import { play } from "https://deno.land/x/audio@0.1.0/mod.ts";
-import { readKeypress } from "https://deno.land/x/keypress@0.0.7/mod.ts";
+import { readKeypress } from "https://deno.land/x/keypress@0.0.10/mod.ts";
 import { Board } from "./src/tetris/board.ts";
 
 // new Promise(async () => {
